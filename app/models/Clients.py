@@ -11,7 +11,6 @@ class Role(str, Enum):
     Desktop = "Desktop"
 
 
-
 class Client(BaseModel):
     client_id: str
     state: State = State.Active

@@ -1,7 +1,10 @@
 from . import app
 # debug
 import logging
-from .routes import Clients
+from .routes import (
+    Clients,
+    User
+)
 
 
 @app.get(
@@ -12,3 +15,4 @@ async def main():
 
 
 app.include_router(Clients.router)
+app.include_router(User.router)
