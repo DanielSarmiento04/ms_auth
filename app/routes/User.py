@@ -69,7 +69,9 @@ async def enrollment(user: UserInDb):
     user.password = AuthManager.get_password_hashed(user.password)
 
     UserDB.add_user_to_database(user)
-    return user
+    return User(
+        username=user.username,
+    )
 
 @router.post(
     '/verify'
