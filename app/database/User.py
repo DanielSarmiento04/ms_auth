@@ -35,14 +35,20 @@ class UserDB():
         return UserInDb(**client)
 
     @staticmethod
-    def get_users_from_database(username:str, limit_registries:int=10) -> list[UserInDb]:
+    def get_users_from_database(limit_registries:int | None = None) -> list[UserInDb]:
         """
             This function receive the username and return the user in database
+
+            Args:
+                limit_registries (int, optional): The maximum number of users to return. Defaults to None.
         """
         users = __collection_users__.find(
-            {"username": username}, 
+            {},
             {"_id": 0}
-        ).limit(limit_registries)
+        )
+
+        if limit_registries != None:
+            users = users.limit(limit_registries)
 
         if not users:
             return []

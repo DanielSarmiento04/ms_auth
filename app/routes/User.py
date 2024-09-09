@@ -56,7 +56,9 @@ async def home():
 @router.post(
     "/enrollment"
 )
-async def enrollment(user: UserInDb):
+async def enrollment(
+    user: UserInDb
+) -> User:
     '''
         This function is used to register a new user
 
@@ -73,13 +75,25 @@ async def enrollment(user: UserInDb):
         username=user.username,
     )
 
+
+@router.get(
+    '/get_users_available'
+)
+async def get_user_available(
+) -> list[User] :
+    '''
+        This function is used to return all users available 
+    '''
+    return UserDB.get_users_from_database()
+
+
+
 @router.post(
     '/verify'
 )
-
 async def verify(
     user: UserInDb
-):
+) -> bool:
     '''
         This function is used to verify user in DB
 
@@ -95,7 +109,11 @@ async def verify(
     if not user_from_db:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-    return AuthManager.verify_password(
-        user_from_db.password,
-        user.password
-    )
+    try:
+        return AuthManager.verify_password(
+            user.password,
+            user_from_db.password,
+        )
+    
+    except Exception as e:
+        return False
