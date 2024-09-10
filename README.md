@@ -3,7 +3,7 @@
 </h1>
 
 <center>
-    Jose Daniel Sarmiento , Manuel Ayala  | { jose2192232, manuel } @correo.uis.edu.co
+    Jose Daniel Sarmiento , Manuel Ayala  | { jose2192232, jose2195529 } @correo.uis.edu.co
 </center>
 
 
