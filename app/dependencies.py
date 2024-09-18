@@ -120,34 +120,6 @@ async def get_current_client(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
     return user
 
-# async def get_current_active_user(current_user: User = Depends(get_current_user)):
-#     if current_user.disabled:
-#         raise HTTPException(
-#                 status_code=status.HTTP_400_BAD_REQUEST, 
-#                 detail="Inactive user",
-#                 headers={"WWW-Authenticate": "Bearer"},
-#             )   
-#     return current_user
-
-# def get_existing_user(user_id: str) -> UserInDB:
-#     """
-#         Description
-#         -----------
-#         This function is used to get a user from the database.
-        
-#         Parameters
-#         ----------
-#         user_id: str
-        
-#         Returns
-#         -------
-#         User
-#     """
-#     user = UserDB.get_user_from_database(user_id)
-#     print('User in database:' + Fore.LIGHTBLUE_EX, user)
-#     if not user:
-#         raise NoFoundException(user_id=user_id, context="User")
-#     return user
 
 def get_existing_client(client_id: str) -> ClientInDB:
     '''
@@ -169,36 +141,3 @@ def get_existing_client(client_id: str) -> ClientInDB:
         raise NoFoundException(user_id=client_id, context="User")
     return client   
 
-# def update_user_password(user_id: str, reqUser: UserPass) -> bool:
-#     """
-#         Description
-#         -----------
-#         This function is used to update a user password from the database.
-        
-#         Parameters
-#         ----------
-#         user_id: str
-        
-#         Returns
-#         -------
-#         User
-#     """
-#     res = UserDB.update_user_password(user_id, reqUser)
-#     return res
-
-# def update_user(user_id: str, reqUser: User) -> bool:
-#     """
-#         Description
-#         -----------
-#         This function is used to update a user from the database.
-        
-#         Parameters
-#         ----------
-#         user_id: str
-        
-#         Returns
-#         -------
-#         User
-#     """
-#     res = UserDB.update_user_password(user_id, reqUser)
-#     return res
