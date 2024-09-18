@@ -26,6 +26,7 @@ from ..database.User import (
     UserDB
 )
 
+from colorama import Fore
 
 router = APIRouter(
     prefix="/user",
@@ -68,8 +69,13 @@ async def enrollment(
         Returns:
             UserInDb - the registered user
     '''
-    user.password = AuthManager.get_password_hashed(user.password)
+    print('User input:' + Fore.LIGHTBLUE_EX, user, Fore.RESET)
 
+    user_db = UserDB.get_user_from_database(user.username)
+    if user_db:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exists")
+
+    user.password = AuthManager.get_password_hashed(user.password)
     UserDB.add_user_to_database(user)
     return User(
         username=user.username,

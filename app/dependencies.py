@@ -164,7 +164,7 @@ def get_existing_client(client_id: str) -> ClientInDB:
         Client
     '''
     client = ClientDB.get_client_from_database(client_id)
-    print('Client in database:' + Fore.LIGHTBLUE_EX, client)
+    print('Client in database:' + Fore.LIGHTBLUE_EX, client, Fore.RESET)
     if not client:
         raise NoFoundException(user_id=client_id, context="User")
     return client   

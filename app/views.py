@@ -8,7 +8,7 @@ from .routes import (
 
 
 @app.get(
-    "/get"
+    "/"
 )
 async def main():
     return {"message": "Hello, World!"}
