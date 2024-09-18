@@ -116,10 +116,12 @@ async def verify(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     try:
+        print('User input:' + Fore.LIGHTBLUE_EX, user, Fore.RESET)
         return AuthManager.verify_password(
             user.password,
             user_from_db.password,
         )
+    
     
     except Exception as e:
         return False
