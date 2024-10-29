@@ -10,17 +10,22 @@ from ..models.User import (
 class UserDB():
 
     @staticmethod
-    def add_user_to_database(user: UserInDb):
+    def add_user_to_database(
+        user: UserInDb
+    ):
         """
             This function receive the user_id and user Object and add the user in database
         """
         response = __collection_users__.insert_one(
-            user.model_dump()
+            user.model_json_schema()
         )
+        
         return response
     
     @staticmethod
-    def get_user_from_database(username:str) -> UserInDb | None:
+    def get_user_from_database(
+        username: str
+    ) -> UserInDb | None:
         """
             This function receive the username and return the user in database
         """
@@ -35,7 +40,9 @@ class UserDB():
         return UserInDb(**client)
 
     @staticmethod
-    def get_users_from_database(limit_registries:int | None = None) -> list[UserInDb]:
+    def get_users_from_database(
+        limit_registries:int | None = None
+    ) -> list[UserInDb]:
         """
             This function receive the username and return the user in database
 
