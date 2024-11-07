@@ -41,7 +41,9 @@ router = APIRouter(
         503: {"description": "Service Unavailable"},
     },
     dependencies=[
-        Depends(get_current_client)
+        Depends(
+            get_current_client
+        )
     ]
 )
 

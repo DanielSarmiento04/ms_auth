@@ -17,11 +17,11 @@ class UserDB():
             This function receive the user_id and user Object and add the user in database
         """
         response = __collection_users__.insert_one(
-            user.model_json_schema()
+            user.model_dump()
         )
-        
+
         return response
-    
+
     @staticmethod
     def get_user_from_database(
         username: str
@@ -30,18 +30,18 @@ class UserDB():
             This function receive the username and return the user in database
         """
         client = __collection_users__.find_one(
-            {"username": username}, 
+            {"username": username},
             {"_id": 0},
         )
-        
+
         if not client:
             return None
-        
+
         return UserInDb(**client)
 
     @staticmethod
     def get_users_from_database(
-        limit_registries:int | None = None
+        limit_registries: int | None = None
     ) -> list[UserInDb]:
         """
             This function receive the username and return the user in database
@@ -59,16 +59,16 @@ class UserDB():
 
         if not users:
             return []
-        
+
         return list(
             map(
-                lambda user: UserInDb(**user), 
+                lambda user: UserInDb(**user),
                 users
             )
         )
 
     @staticmethod
-    def delete_users_in_database(username:str):
+    def delete_users_in_database(username: str):
         """
             This function receive the username and delete the user in database
         """
@@ -76,4 +76,3 @@ class UserDB():
             {"username": username}
         )
         return response
-    

@@ -7,7 +7,11 @@ class Role(Enum):
 
 class User(BaseModel):
     username:str
-    role:Role  = Role.user.value
+    role: Role  = Role.user
+
+
+    class Config:
+       use_enum_values = True  # <--
 
 class UserInDb(User):
     password:str
