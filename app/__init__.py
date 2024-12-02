@@ -1,11 +1,25 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI(
     title="Ms Authorization",
     description="This is a simple API to validate",
     version="1.0.2",
 )
+
+
+app.mount("/app/static", StaticFiles(directory="app/static"), name="static")
+# app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+templates = Jinja2Templates(directory="templates")
+
+
+
+
+
 
 origins = [
     "*"

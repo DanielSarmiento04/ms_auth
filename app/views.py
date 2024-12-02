@@ -6,7 +6,6 @@ from .routes import (
     User
 )
 
-
 @app.get(
     "/"
 )
