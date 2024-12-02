@@ -26,6 +26,9 @@ from .models.User import (
     UserInDb,
     User as UserDto
 )
+from .services import (
+    Emails
+)
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -78,6 +81,7 @@ async def add_operator(
         )
     )
 
+    Emails.send(email)
     return 
 
     
