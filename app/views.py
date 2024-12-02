@@ -1,6 +1,9 @@
 from . import app
 # debug
-from fastapi import Request
+from fastapi import (
+    Request,
+    Form,
+)
 import logging
 from .routes import (
     Clients,
@@ -32,18 +35,23 @@ async def main(
 
 @app.post(
     "/",
-    response_class=HTMLResponse
+    # response_class=HTMLResponse
 )
 async def login(
-    request: Request
+    # username: str = Form(...),
+    # password: str = Form(...),
+    req: Request
 ):
     '''
-    
+        This is the main route of the application
+
+        Returns:
+
     '''
-    return templates.TemplateResponse(
-        request=request,
-        name="user.html",
-    )
+
+    body = await req.json()
+    print(body)
+    return "200"
 
 
 
