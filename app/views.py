@@ -10,7 +10,7 @@ from .routes import (
     User
 )
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import BaseModel
 from .database.User import (
     UserDB
@@ -19,26 +19,25 @@ from .routes.User import (
     verify
 )
 from .models.User import (
-    UserInDb
+    UserInDb,
+    User as UserDto
 )
 
 templates = Jinja2Templates(directory="app/templates")
 
 @app.post(
     "/",
+    response_class=HTMLResponse
 )
 async def login(
     username: str = Form(...),
     password: str = Form(...),
-    # req: Request
 ):
     '''
         This is the main route of the application
         Returns:
 
     '''
-
-    print(username, password)
 
     user = await verify(
         UserInDb(
@@ -48,7 +47,36 @@ async def login(
     )
     print(user)
 
-    return "200"
+    return RedirectResponse(
+        url=f"/user?username={username}&role={user.role}",
+        status_code=303
+    )
+
+@app.get(
+    "/user",
+    response_class=HTMLResponse
+)
+async def main(
+    request: Request,
+    username: str = None,
+    role: str = None
+):
+    '''
+        This is the main route of the application
+
+        Returns:
+    '''    
+    user = UserDto(
+        username=username,
+        role=role
+    )
+
+
+    return templates.TemplateResponse(
+        request=request,
+        name="user.html",  
+        context={"request": request, "user": user}
+    )
 
 
 @app.get(

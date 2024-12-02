@@ -127,7 +127,8 @@ async def verify(
     if not pass_verified:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Password not valid")
     
-    return UserInDb
+    return user_from_db
+    
 
 @router.delete(
     '/delete'
