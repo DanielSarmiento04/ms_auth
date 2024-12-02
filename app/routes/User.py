@@ -101,7 +101,7 @@ async def get_user_available(
 )
 async def verify(
     user: UserInDb
-) -> bool:
+) -> UserInDb:
     '''
         This function is used to verify user in DB
 
@@ -117,13 +117,14 @@ async def verify(
     if not user_from_db:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-    try:
-        print('User input:' + Fore.LIGHTBLUE_EX, user, Fore.RESET)
-        return AuthManager.verify_password(
-            user.password,
-            user_from_db.password,
-        )
     
+    print('User input:' + Fore.LIGHTBLUE_EX, user, Fore.RESET)
+    pass_verified =  AuthManager.verify_password(
+        user.password,
+        user_from_db.password,
+    )
+
+    if not pass_verified:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Password not valid")
     
-    except Exception as e:
-        return False
+    return UserInDb

@@ -12,6 +12,15 @@ from .routes import (
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
+from .database.User import (
+    UserDB
+)
+from .routes.User import (
+    verify
+)
+from .models.User import (
+    UserInDb
+)
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -30,6 +39,15 @@ async def login(
     '''
 
     print(username, password)
+
+    user = await verify(
+        UserInDb(
+            username=username,
+            password=password
+        )
+    )
+    print(user)
+
     return "200"
 
 
