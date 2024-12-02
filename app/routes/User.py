@@ -128,3 +128,25 @@ async def verify(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Password not valid")
     
     return UserInDb
+
+@router.delete(
+    '/delete'
+)
+async def delete_user(
+    username: str
+) :
+    '''
+        This function is used to delete a user
+
+        Args:
+            username: str - the username to delete
+
+        Returns:
+            Response - the response
+    '''
+    user = UserDB.get_user_from_database(username)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    UserDB.delete_user_in_database(username)
+    return 

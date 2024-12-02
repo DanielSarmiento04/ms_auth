@@ -69,6 +69,24 @@ async def main(
         name="index.html",
     )
 
+@app.get(
+    "/register",
+    response_class=HTMLResponse
+)
+async def main(
+    request: Request
+):
+    '''
+        This is the main route of the application
+
+        Returns:
+    '''
+
+    return templates.TemplateResponse(
+        request=request,
+        name="register.html",
+    )
+
 
 app.include_router(Clients.router)
 app.include_router(User.router)

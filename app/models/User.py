@@ -16,7 +16,7 @@ class Role(Enum):
 
 class User(BaseModel):
     username:str
-    role: Role  = Role.user
+    role: Role 
 
 
     class Config:
