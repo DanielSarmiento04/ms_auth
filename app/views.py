@@ -17,7 +17,9 @@ templates = Jinja2Templates(directory="app/templates")
     "/",
     response_class=HTMLResponse
 )
-async def main(request: Request):
+async def main(
+    request: Request
+):
     '''
         This is the main route of the application
 
@@ -27,6 +29,22 @@ async def main(request: Request):
         request=request,
         name="index.html",
     )
+
+@app.post(
+    "/",
+    response_class=HTMLResponse
+)
+async def login(
+    request: Request
+):
+    '''
+    
+    '''
+    return templates.TemplateResponse(
+        request=request,
+        name="user.html",
+    )
+
 
 
 app.include_router(Clients.router)
