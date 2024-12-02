@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from enum import Enum
+from typing import Optional
 
 class Operator(
     BaseModel
@@ -16,8 +17,7 @@ class Role(Enum):
 
 class User(BaseModel):
     username:str
-    role: Role 
-
+    role: Optional[Role] = Role.user
 
     class Config:
        use_enum_values = True  # <--
