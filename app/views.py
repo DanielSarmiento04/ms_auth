@@ -11,9 +11,26 @@ from .routes import (
 )
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-
+from pydantic import BaseModel
 
 templates = Jinja2Templates(directory="app/templates")
+
+@app.post(
+    "/",
+)
+async def login(
+    username: str = Form(...),
+    password: str = Form(...),
+    # req: Request
+):
+    '''
+        This is the main route of the application
+        Returns:
+
+    '''
+
+    print(username, password)
+    return "200"
 
 
 @app.get(
@@ -28,31 +45,11 @@ async def main(
 
         Returns:
     '''
+
     return templates.TemplateResponse(
         request=request,
         name="index.html",
     )
-
-@app.post(
-    "/",
-    # response_class=HTMLResponse
-)
-async def login(
-    # username: str = Form(...),
-    # password: str = Form(...),
-    req: Request
-):
-    '''
-        This is the main route of the application
-
-        Returns:
-
-    '''
-
-    body = await req.json()
-    print(body)
-    return "200"
-
 
 
 app.include_router(Clients.router)
