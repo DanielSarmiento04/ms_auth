@@ -14,6 +14,7 @@ class Operator(
 class Role(Enum):
     admin = 'admin'
     user = 'user'
+    operator = 'operator'
 
 class User(BaseModel):
     username:str

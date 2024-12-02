@@ -10,13 +10,17 @@ from .routes import (
     User
 )
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import (
+    HTMLResponse, 
+    RedirectResponse,
+)
 from pydantic import BaseModel
 from .database.User import (
     UserDB
 )
 from .routes.User import (
-    verify
+    verify,
+    enrollment
 )
 from .models.User import (
     UserInDb,
@@ -51,6 +55,32 @@ async def login(
         url=f"/user?username={username}&role={user.role}",
         status_code=303
     )
+
+@app.post(
+    "/add-operator",
+    response_class=HTMLResponse
+)
+async def add_operator(
+    email: str = Form(...),
+    password: str = Form(...),
+):
+    '''
+        This is the main route of the application
+        Returns:
+
+    '''
+
+    user = await enrollment(
+        UserInDb(
+            username=email,
+            password=password,
+            role="operator"
+        )
+    )
+
+    return 
+
+    
 
 @app.get(
     "/user",
