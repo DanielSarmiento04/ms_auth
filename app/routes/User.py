@@ -81,6 +81,7 @@ async def enrollment(
     UserDB.add_user_to_database(user)
     return User(
         username=user.username,
+        role=user.role
     )
 
 
@@ -92,7 +93,8 @@ async def get_user_available(
     '''
         This function is used to return all users available 
     '''
-    return UserDB.get_users_from_database()
+    return UserDB \
+            .get_users_from_database()
 
 
 

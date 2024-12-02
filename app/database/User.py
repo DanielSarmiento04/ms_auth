@@ -68,7 +68,7 @@ class UserDB():
         )
 
     @staticmethod
-    def delete_users_in_database(username: str):
+    def delete_user_in_database(username: str):
         """
             This function receive the username and delete the user in database
         """
