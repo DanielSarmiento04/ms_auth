@@ -13,6 +13,11 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 # Copy the source code
 COPY ./app /code/app
 
+ARG MONGO_CLIENT=mongodb+srv://user:contrasena_segura_2.0@realidad-aumentada.evjmu.mongodb.net/?retryWrites=true&w=majority&appName=realidad-aumentada
+ARG SECRET_KEY=_D325b5q2wW7CJXDKoLIYA8VEi9E_LqMGH7zVevaaEc%
+ARG CLIENT_DATABASE=clients
+ARG RESEND_API_KEY=re_ZK39viaA_Fg24wxsmyeBgqkT2P8WccWFz
+
 # Copy the dotenv file
 COPY ./.env /code/.env
 

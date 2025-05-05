@@ -1,51 +1,74 @@
 <h1 align="center">
-    Micro Servicio Autorización
+    Authorization Microservice
 </h1>
 
 <center>
     Jose Daniel Sarmiento , Manuel Ayala  | { jose2192232, jose2195529 } @correo.uis.edu.co
 </center>
 
+## Description
 
+This microservice is responsible for managing the authentication and authorization of clients and users within the system. It provides endpoints to register clients, generate access tokens (JWT), and verify the validity of tokens. It also handles user registration, verification, and deletion.
 
-## Resumen
+## Setup
 
-The follow repository aims to management the user client and operation user to manage, and distribute the each 
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd ms_authorization
+    ```
+2.  **Create a virtual environment (recommended):**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+3.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+4.  **Configure environment variables:**
+    Create a `.env` file in the project root and define the necessary variables, such as `SECRET_KEY`.
+    ```env
+    SECRET_KEY='your_strong_secret_key_here'
+    # Other configuration variables if any (e.g., Database URL)
+    ```
 
+## Running the Service
 
-## Tabla de Contenido
+To start the Uvicorn development server:
 
-- [Instalación](#instalación)
-
-
-## Instalación
-
-
-- Configurar ar archivo `.env` con endpoint localhost y no de contenedores
-
-
-1. Crear base de datos
-
-```
-    docker network create realidad_aumentada
-    docker volume create db_data_user
-    docker run -d --name db_user --network realidad_aumentada -p 57017:27017 --mount src=db_data_user,dst=/data/db mongo
-```
-
-2. Crear volumen estático  para la base de datos
-
-```
-    docker build -t ms_user_management:2 .
-```
-
-3. Correr el contenedor
-
-```
-    docker run --name ms_user_management -8081:81  --network realidad_aumentada  ms_user_management:2
+```bash
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-## Referencias
+The service will be available at `http://localhost:8000`. The interactive API documentation (Swagger UI) will be at `http://localhost:8000/docs`.
 
-[1] Michael Davis (2015) JSON web signature, python. Available at: https://python-jose.readthedocs.io/en/latest/jws/index.html (Accessed: 05 December 2023). 
+## API Endpoints
 
-[2] Sourabh, F. (2023) Password hashing with Bcrypt, Company. Available at: https://www.fastapitutorial.com/blog/password-hashing-fastapi/ (Accessed: 05 December 2023). 
+### Authentication and Clients (`/api/v1/Authorization`)
+
+*   **`POST /Register`**: Registers a new client in the system.
+    *   **Request Body:** `ClientInDB` (client\_id, password, state, role)
+    *   **Response:** `ClientInDB` (with the hashed password)
+*   **`POST /`**: Authenticates a client and generates a JWT access token.
+    *   **Request Body:** `OAuth2PasswordRequestForm` (username=client\_id, password)
+    *   **Response:** `{ "access_token": "...", "token_type": "bearer" }`
+*   **`POST /Verify`**: Verifies if the access token provided in the `Authorization: Bearer <token>` header is valid. Requires authentication.
+    *   **Response:** `200 OK` if the token is valid.
+
+### User Management (`/user`)
+
+*Note: All `/user` endpoints require a valid client token.*
+
+*   **`GET /`**: Test endpoint to check connectivity.
+*   **`POST /enrollment`**: Registers a new user.
+    *   **Request Body:** `UserInDb` (username, password, role)
+    *   **Response:** `User` (username, role)
+*   **`GET /get_users_available`**: Retrieves the list of all registered users.
+    *   **Response:** `list[User]`
+*   **`POST /verify`**: Verifies a user's credentials (username and password).
+    *   **Request Body:** `UserInDb` (username, password)
+    *   **Response:** `UserInDb` if credentials are correct.
+*   **`DELETE /delete?username={username}`**: Deletes a user by their username.
+    *   **Response:** `200 OK` if deleted successfully.
+

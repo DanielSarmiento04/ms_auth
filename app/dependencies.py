@@ -1,4 +1,3 @@
-
 # FastApi Security Schema, DTO'S and toolkit necessary to manage the authentication
 from fastapi import (
     HTTPException, 
@@ -22,6 +21,7 @@ from datetime import (
     timedelta
 )
 from pydantic import BaseModel
+from typing import Optional
 
 # Internals DTO'S schemas
 from .models.Clients import (
@@ -30,11 +30,11 @@ from .models.Clients import (
 )
 
 from .database.Clients import ClientDB
-from .exceptions import NoFoundException
 from .constants import SECRET_KEY
 
-# Logs
-from colorama import Fore
+# --- Constants ---
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 12  # 12 hours
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/Authorization")
 
@@ -54,11 +54,6 @@ class TokenData(BaseModel):
     username: str = None
 
 class AuthManager():
-    
-    ALGORITHM = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 12  # minutes
-    SECRET_KEY = SECRET_KEY
-
     @staticmethod
     def verify_password(plain_password, hashed_password):
         """
@@ -78,24 +73,25 @@ class AuthManager():
         return __pwd_context__.hash(password)
 
     @staticmethod
-    def create_access_token(data: dict, expires_delta: timedelta | None= None) -> str:
+    def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
         """
             Description
             -----------
             Create the access token using Jose with HS256
         """
         to_encode = data.copy()
-        # Create per default a token that expire in 15 minutes
+        # Create per default a token that expires based on ACCESS_TOKEN_EXPIRE_MINUTES
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=15)
+            # Use the module-level constant
+            expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, AuthManager().SECRET_KEY, algorithm = AuthManager().ALGORITHM)
-        
-        return encoded_jwt
+        # Use class-level access for constants
+        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
+        return encoded_jwt
 
 
 async def get_current_client(token: str = Depends(oauth2_scheme)):
@@ -104,40 +100,40 @@ async def get_current_client(token: str = Depends(oauth2_scheme)):
         Args:
             token: str - the token to validate
         Returns:
-            Client - the Client that the token belongs
+            ClientInDB - the Client that the token belongs
     '''
     try:
-        payload = jwt.decode(token, AuthManager.SECRET_KEY, algorithms=[AuthManager.ALGORITHM])
+        # Use constants directly
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         client_id: str = payload.get("sub")
         if client_id is None:
             raise credentials_exception
         token_data = TokenData(username=client_id)
-        # print(token_data)
     except JWTError:
         raise credentials_exception
+    # Use the modified get_existing_client
     user = get_existing_client(token_data.username)
-    if not  user:
+    if not user:
+        # If user not found after decoding token, raise credentials exception
         raise credentials_exception
     return user
 
 
-def get_existing_client(client_id: str) -> ClientInDB:
+def get_existing_client(client_id: str) -> Optional[ClientInDB]:
     '''
         Description
         -----------
         This function is used to get a client from the database.
-        
+
         Parameters
         ----------
         client_id: str
-        
+
         Returns
         -------
-        Client
+        Optional[ClientInDB]: The client if found, otherwise None.
     '''
     client = ClientDB.get_client_from_database(client_id)
-    print('Client in database:' + Fore.LIGHTBLUE_EX, client, Fore.RESET)
-    if not client:
-        raise NoFoundException(user_id=client_id, context="User")
-    return client   
+    # Return the client object or None, let the caller handle the case where client is None
+    return client
 

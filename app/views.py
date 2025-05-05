@@ -82,9 +82,12 @@ async def add_operator(
     )
 
     Emails.send(email)
-    return 
 
-    
+    return  RedirectResponse("/success", status_code=303)
+
+@app.get("/success", response_class=HTMLResponse)
+async def success_page(request: Request):
+    return templates.TemplateResponse("success.html", {"request": request})
 
 @app.get(
     "/user",

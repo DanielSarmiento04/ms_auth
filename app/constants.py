@@ -1,6 +1,6 @@
-from dotenv import dotenv_values
+import os
 
-__config__        = dotenv_values(".env")
+__config__        = os.environ
 __url_client__    = __config__.get("MONGO_CLIENT")
 __name_database__ = __config__.get("CLIENT_DATABASE")
 

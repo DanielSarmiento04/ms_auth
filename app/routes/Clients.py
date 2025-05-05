@@ -6,6 +6,8 @@ from fastapi import (
     Response
 )
 
+from typing import Optional
+
 from ..dependencies import (
     OAuth2PasswordRequestForm, 
     AuthManager, 
@@ -43,29 +45,30 @@ no_authenticate_client_exception = HTTPException(
     headers={"Content-Type": "application/json"},
 )
 
-def authenticate_client(client_id: str, password: str):
+def authenticate_client(client_id: str, password: str) -> Optional[ClientInDB]:
     '''
         Function to validate the user and password with the registered in database
 
         Args: 
             client_id: str - the id of the user
             password: str - the password of the user
+        Returns:
+            Optional[ClientInDB] - The authenticated client object or None if authentication fails.
     '''
 
     client = get_existing_client(client_id)
 
-    print(client)
     # If the client doesn't exist in database 
     if not client:
-        return False
+        return None
     
     # If the password doesn't match with the registered in database
     if not AuthManager.verify_password(password, client.password):
-        return False
+        return None
     
     return client
 
-@router.post("/Register")
+@router.post("/Register", status_code=status.HTTP_201_CREATED)
 async def register(client: ClientInDB):
     '''
         Function to register a new client in the database
@@ -117,7 +120,7 @@ async def authorization(form_data: OAuth2PasswordRequestForm = Depends()):
 
     access_token_expires = timedelta(minutes=AuthManager.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = AuthManager.create_access_token(
-        data={"sub": form_data.username, "role": client.role}, expires_delta=access_token_expires
+        data={"sub": client.client_id, "role": client.role}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -131,4 +134,3 @@ async def Verify():
             Response - the response with the status code 200
     '''
     return Response(status_code=status.HTTP_200_OK)
-   
