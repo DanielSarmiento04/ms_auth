@@ -54,6 +54,9 @@ class TokenData(BaseModel):
     username: str = None
 
 class AuthManager():
+
+    ACCESS_TOKEN_EXPIRE_MINUTES = ACCESS_TOKEN_EXPIRE_MINUTES
+
     @staticmethod
     def verify_password(plain_password, hashed_password):
         """
